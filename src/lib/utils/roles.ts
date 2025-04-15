@@ -1,4 +1,4 @@
-import { ROLES, type Role } from "$lib/auth/roles";
+import { type Role, ROLES } from "../auth/roles";
 
 const has_atleast = (user: Lucia.DatabaseUserAttributes, role: Role) => {
   const needs_i = ROLES.indexOf(role);

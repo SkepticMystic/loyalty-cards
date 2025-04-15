@@ -1,16 +1,13 @@
-import { App } from "$lib/utils/app";
-import { Roles } from "$lib/utils/roles";
-import { Url } from "$lib/utils/urls";
 import { error, redirect } from "@sveltejs/kit";
+import { App } from "../utils/app";
+import { Roles } from "../utils/roles";
 import { type Role } from "./roles";
 
 type GetUserOptions = {
-  /** Must have atleast this orgRole */
+  /** Must have atleast this role */
   role?: Role;
   /** Must be an admin */
   admin?: boolean;
-  /** If unauthed, redirect to signin with this url as the redirect param */
-  url?: URL;
 };
 
 /** The catch-all function to get the current user.
@@ -21,19 +18,15 @@ export const get_user = async (
   locals: App.Locals,
   options?: GetUserOptions,
 ) => {
-  const { admin, role, url } = {
+  const { admin, role } = {
     admin: false,
     role: undefined,
-    url: undefined,
     ...(options ?? {}),
   };
 
   const session = await locals.auth.validate();
   if (!session) {
-    redirect(
-      302,
-      App.url("/auth/signin", { redirect: url ? Url.strip_origin(url) : "/" }),
-    );
+    redirect(302, App.url("/auth/signin", { redirect: "/" }));
   }
   const { user } = session;
 

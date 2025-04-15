@@ -1,6 +1,5 @@
 import { auth } from "$lib/auth/lucia";
 import { Parsers } from "$lib/schema/parsers";
-import { INTERNAL_SERVER_ERROR } from "$lib/utils/errors";
 import { type Actions, error, redirect } from "@sveltejs/kit";
 import { z } from "zod";
 
@@ -28,7 +27,7 @@ export const actions: Actions = {
         error(400, "Invalid email or password");
       }
 
-      INTERNAL_SERVER_ERROR(e);
+      error(500, "Internal server error");
     }
 
     redirect(302, url.searchParams.get("redirect") ?? "/");

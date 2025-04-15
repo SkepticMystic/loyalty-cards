@@ -1,19 +1,19 @@
 import { dev } from "$app/environment";
-import type { SID } from "$lib/interfaces";
 import { mongoose as luciaMongooseAdapter } from "@lucia-auth/adapter-mongoose";
 import { lucia } from "lucia";
 import { sveltekit } from "lucia/middleware";
-import mongoose, { Model } from "mongoose";
+import mongoose from "mongoose";
+import type { SID } from "../interfaces";
 import { ROLES } from "./roles";
 
-export const Users =
-  <Model<SID<Lucia.DatabaseUserAttributes>>>mongoose.models["auth_user"] ||
-  mongoose.model<Model<SID<Lucia.DatabaseUserAttributes>>>(
+export const Users: mongoose.Model<SID<Lucia.DatabaseUserAttributes>> =
+  mongoose.models["auth_user"] ||
+  mongoose.model(
     "auth_user",
     new mongoose.Schema(
       {
-        //@ts-expect-error
         _id: String,
+
         email: {
           type: String,
           required: true,

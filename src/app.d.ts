@@ -15,11 +15,13 @@ declare global {
     type Auth = import("$lib/auth/lucia").Auth;
 
     type DatabaseUserAttributes = {
+      admin: boolean;
+
       email: string;
+      email_verified: boolean;
+
       team_id: string;
       role: import("$lib/auth/roles").Role;
-      email_verified: boolean;
-      admin: boolean;
     };
 
     type DatabaseSessionAttributes = {};
