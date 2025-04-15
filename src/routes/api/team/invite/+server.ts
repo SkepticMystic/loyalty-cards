@@ -1,6 +1,6 @@
 import { Users } from "$lib/auth/lucia";
 import { ROLES } from "$lib/auth/roles";
-import { get_user } from "$lib/auth/server";
+import { get_seller } from "$lib/auth/server";
 import { OTP } from "$lib/models/OTPs";
 import { Parsers } from "$lib/schema/parsers";
 import { Roles } from "$lib/utils/roles";
@@ -10,7 +10,7 @@ import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ locals, request, url }) => {
   const [user, invite] = await Promise.all([
-    get_user(locals),
+    get_seller(locals),
     Parsers.request(
       request,
       z.object({ role: z.enum(ROLES), email: z.string().email() }),
@@ -26,7 +26,11 @@ export const POST: RequestHandler = async ({ locals, request, url }) => {
 
   await OTP.handleLinks["team-invite"]({
     idValue: invite.email,
-    data: { role: invite.role, team_id: user.team_id, createdBy: user.userId },
+    data: {
+      role: invite.role,
+      team_id: user.team_id,
+      createdBy: user.userId,
+    },
   });
 
   return json({ ok: true });

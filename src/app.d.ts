@@ -19,10 +19,16 @@ declare global {
 
       email: string;
       email_verified: boolean;
-
-      team_id: string;
-      role: import("$lib/auth/roles").Role;
-    };
+    } & (
+      | {
+          kind: "buyer";
+        }
+      | {
+          kind: "seller";
+          team_id: string;
+          role: import("$lib/auth/roles").Role;
+        }
+    );
 
     type DatabaseSessionAttributes = {};
   }

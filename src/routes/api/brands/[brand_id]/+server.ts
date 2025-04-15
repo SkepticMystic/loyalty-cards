@@ -1,4 +1,4 @@
-import { get_user } from "$lib/auth/server";
+import { get_seller } from "$lib/auth/server";
 import { Branches } from "$lib/models/Branches";
 import { Brands, modify_brand_schema } from "$lib/models/Brands";
 import { LoyaltyCards } from "$lib/models/LoyaltyCards";
@@ -11,7 +11,7 @@ import { mongo } from "mongoose";
 
 export const PATCH: RequestHandler = async ({ locals, request, params }) => {
   const [user, input] = await Promise.all([
-    get_user(locals, { role: "admin" }),
+    get_seller(locals, { role: "admin" }),
     Parsers.request(request, modify_brand_schema.partial()),
   ]);
 
@@ -43,7 +43,7 @@ export const PATCH: RequestHandler = async ({ locals, request, params }) => {
 };
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
-  const user = await get_user(locals, { role: "admin" });
+  const user = await get_seller(locals, { role: "admin" });
 
   try {
     await Promise.all([

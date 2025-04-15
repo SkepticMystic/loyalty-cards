@@ -1,6 +1,6 @@
 import { auth, Users } from "$lib/auth/lucia";
 import { ROLES } from "$lib/auth/roles";
-import { get_user } from "$lib/auth/server";
+import { get_seller } from "$lib/auth/server";
 import { Parsers } from "$lib/schema/parsers";
 import { Roles } from "$lib/utils/roles";
 import { error, json } from "@sveltejs/kit";
@@ -9,7 +9,7 @@ import type { RequestHandler } from "./$types";
 
 export const PUT: RequestHandler = async ({ locals, request, params }) => {
   const [user, { newRole }] = await Promise.all([
-    get_user(locals),
+    get_seller(locals),
     Parsers.request(request, z.object({ newRole: z.enum(ROLES) })),
   ]);
 
@@ -37,6 +37,8 @@ export const PUT: RequestHandler = async ({ locals, request, params }) => {
   }).lean();
   if (!member) {
     error(404, "Member not found.");
+  } else if (member.kind !== "seller") {
+    error(500, "Member is not a seller");
   } else if (!Roles.has_atleast(user, member.role)) {
     error(
       403,

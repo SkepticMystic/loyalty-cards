@@ -1,4 +1,4 @@
-import { get_user } from "$lib/auth/server";
+import { get_seller } from "$lib/auth/server";
 import { Branches, modify_branch_schema } from "$lib/models/Branches";
 import { Parsers } from "$lib/schema/parsers";
 import { err, suc } from "$lib/utils";
@@ -6,7 +6,7 @@ import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({ locals, request }) => {
   const [user, input] = await Promise.all([
-    get_user(locals, { role: "admin" }),
+    get_seller(locals, { role: "admin" }),
     Parsers.request(request, modify_branch_schema),
   ]);
 

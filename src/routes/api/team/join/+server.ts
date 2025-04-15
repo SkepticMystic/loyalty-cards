@@ -14,8 +14,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   if (team_id) {
     const session = await locals.auth.validate();
-    // Check if they've already accepted this invite
-    if (session?.user?.team_id === team_id) {
+
+    if (
+      session &&
+      session.user.kind === "seller" &&
+      session.user.team_id === team_id
+    ) {
+      // Check if they've already accepted this invite
       console.log("User already on this team");
       // They are already a member of this org
       redirect(302, "/");
@@ -40,7 +45,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
       redirect(
         302,
-        App.url("/auth/signup", {
+        App.url("/auth/signup/seller", {
           team_token: token,
           email_hint: check_user.error.id.value,
         }),

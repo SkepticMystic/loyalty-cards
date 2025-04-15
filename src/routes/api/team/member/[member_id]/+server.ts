@@ -1,13 +1,14 @@
 import { auth, Users } from "$lib/auth/lucia";
-import { get_user } from "$lib/auth/server";
+import { get_seller } from "$lib/auth/server";
 import { Teams } from "$lib/models/Teams";
 import { Roles } from "$lib/utils/roles";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
-  const user = await get_user(locals);
   const { member_id } = params;
+
+  const user = await get_seller(locals);
 
   if (user.userId === member_id) {
     error(400, "You cannot remove yourself from the team.");
@@ -20,6 +21,8 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 
   if (!member) {
     error(404, "Member not found.");
+  } else if (member.kind !== "seller") {
+    error(500, "Member is not a seller");
   } else if (!Roles.has_atleast(user, member.role)) {
     error(403, "You cannot remove a member with a higher role than you.");
   }

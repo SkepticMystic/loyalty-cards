@@ -1,4 +1,4 @@
-import { get_user } from "$lib/auth/server";
+import { get_seller } from "$lib/auth/server";
 import {
   LoyaltyCards,
   modify_loyalty_card_schema,
@@ -9,7 +9,7 @@ import { json, type RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({ locals, request }) => {
   const [user, input] = await Promise.all([
-    get_user(locals, { role: "admin" }),
+    get_seller(locals, { role: "admin" }),
     Parsers.request(request, modify_loyalty_card_schema),
   ]);
 

@@ -98,15 +98,7 @@ export const auth = lucia({
     Key: Keys,
   }),
 
-  getUserAttributes: ({ email, email_verified, team_id, role, admin }) => ({
-    // Included by default:
-    // userId: id,
-    admin,
-    email,
-    email_verified,
-    role,
-    team_id,
-  }),
+  getUserAttributes: (u) => u,
 });
 
 export type Auth = typeof auth;

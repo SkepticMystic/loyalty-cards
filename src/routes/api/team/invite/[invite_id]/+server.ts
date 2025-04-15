@@ -1,11 +1,11 @@
-import { get_user } from "$lib/auth/server";
+import { get_seller } from "$lib/auth/server";
 import { OTPs, type TeamInviteOTP } from "$lib/models/OTPs";
 import { Roles } from "$lib/utils/roles";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
-  const user = await get_user(locals);
+  const user = await get_seller(locals);
 
   const { invite_id } = params;
 

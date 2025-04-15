@@ -1,10 +1,10 @@
 import { auth, Users } from "$lib/auth/lucia";
-import { get_user } from "$lib/auth/server";
+import { get_seller } from "$lib/auth/server";
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const PUT: RequestHandler = async ({ locals, params }) => {
-  const [user] = await Promise.all([get_user(locals)]);
+  const [user] = await Promise.all([get_seller(locals)]);
 
   if (user.role !== "owner") {
     error(
@@ -19,8 +19,11 @@ export const PUT: RequestHandler = async ({ locals, params }) => {
     _id: params.member_id,
     team_id: user.team_id,
   }).lean();
+
   if (!member) {
     error(404, "Member not found.");
+  } else if (member.kind !== "seller") {
+    error(500, "Member is not a seller");
   }
 
   // At this point, we know

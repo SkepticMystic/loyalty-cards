@@ -21,7 +21,10 @@ export const actions: Actions = {
 
     // SECTION: Team
 
-    let attributes: Pick<User, "email_verified" | "role" | "team_id">;
+    let attributes: Pick<
+      Extract<User, { kind: "seller" }>,
+      "email_verified" | "role" | "team_id" | "kind"
+    >;
 
     if (team_token) {
       // Find and delete the OTP
@@ -33,6 +36,7 @@ export const actions: Actions = {
       if (!otp) error(400, "Invalid team token");
 
       attributes = {
+        kind: "seller",
         email_verified: true,
         role: otp.data.role,
         team_id: otp.data.team_id,
@@ -40,6 +44,7 @@ export const actions: Actions = {
     } else {
       const team = await Teams.create({});
       attributes = {
+        kind: "seller",
         email_verified: false,
         role: "owner",
         team_id: team._id.toString(),

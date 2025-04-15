@@ -57,6 +57,7 @@
     {
       side: "right",
       label: "Sign up",
+      // TODO: ?
       href: "/auth/signup",
       authed: false,
     },

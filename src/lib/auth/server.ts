@@ -39,3 +39,29 @@ export const get_user = async (
 
   return user;
 };
+
+export const get_seller = async (
+  locals: App.Locals,
+  options?: GetUserOptions,
+) => {
+  const user = await get_user(locals, options);
+
+  if (user.kind !== "seller") {
+    error(400, "User is not a seller");
+  }
+
+  return user;
+};
+
+export const get_buyer = async (
+  locals: App.Locals,
+  options?: GetUserOptions,
+) => {
+  const user = await get_user(locals, options);
+
+  if (user.kind !== "buyer") {
+    error(400, "User is not a buyer");
+  }
+
+  return user;
+};
