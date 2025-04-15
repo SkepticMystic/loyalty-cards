@@ -38,6 +38,7 @@
     "@tailwindcss/forms": "^0.5.10",
     "axios": "^1.8.4",
     "emailjs": "^4.0.3",
+    "ky": "^1.8.1",
     "lucia": "^2.7.7",
     "mongoose": "^8.13.2",
     "svelte-daisyui-toast": "^2.0.3",

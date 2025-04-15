@@ -1,40 +1,32 @@
 <script lang="ts">
-  import { preventDefault } from "svelte/legacy";
-  import Loading from "$lib/components/daisyui/Loading.svelte";
-  import Label from "$lib/components/daisyui/Label.svelte";
-  import type { Result } from "$lib/interfaces";
-  import { get_http_error_msg } from "$lib/utils/errors";
-  import { any_loading, Loader } from "$lib/utils/loader";
-  import axios from "axios";
-  import { toast } from "svelte-daisyui-toast";
+  import { UserClient } from "$lib/client/user.client";
   import Fieldset from "$lib/components/daisyui/Fieldset.svelte";
+  import Label from "$lib/components/daisyui/Label.svelte";
+  import Loading from "$lib/components/daisyui/Loading.svelte";
+  import { any_loading, Loader } from "$lib/utils/loader";
+  import { toast } from "svelte-daisyui-toast";
+  import { preventDefault } from "svelte/legacy";
 
-  let newPass = $state("");
-  let confirmPass = $state("");
+  let form = $state({
+    new: "",
+    confirm: "",
+  });
 
   const loader = Loader<"change-pwd">();
 
   const changePassword = async () => {
-    toast.set([]);
+    if (form.new !== form.confirm) {
+      return toast.warning("Passwords do not match");
+    }
 
-    if (newPass !== confirmPass) return toast.warning("Passwords do not match");
     loader.load("change-pwd");
 
-    try {
-      const { data } = await axios.put<Result>("/api/user/password", {
-        newPass,
-      });
-
-      if (data.ok) {
-        newPass = confirmPass = "";
-
-        toast.success("Password changed successfully");
-      } else {
-        toast.error("Something went wrong");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(get_http_error_msg(error));
+    const res = await UserClient.change_password(form.new);
+    if (res.ok) {
+      form = {
+        new: "",
+        confirm: "",
+      };
     }
 
     loader.reset();
@@ -48,7 +40,7 @@
         class="input"
         type="password"
         autocomplete="new-password"
-        bind:value={newPass}
+        bind:value={form.new}
       />
     </Label>
 
@@ -57,7 +49,7 @@
         class="input"
         type="password"
         autocomplete="new-password"
-        bind:value={confirmPass}
+        bind:value={form.confirm}
       />
     </Label>
   </Fieldset>
@@ -66,7 +58,7 @@
     <button
       class="btn btn-primary"
       type="submit"
-      disabled={!newPass || !confirmPass || any_loading($loader)}
+      disabled={!form.new || !form.confirm || any_loading($loader)}
     >
       <Loading loading={$loader["change-pwd"]} />
       Change Password
